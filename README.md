@@ -13,7 +13,7 @@ To install the chart, first configure a override-values.yaml file specific for y
 
 ## Configuration
 
-The following table lists the configurable parameters of the integration-manager-worker chart and their default values.
+The following table lists the configurable parameters of the amqp-pod-autoscaler chart and their default values.
   
 | Paramter | Description | Default|
 | -----  | ----- | ------|
