@@ -50,7 +50,7 @@ worker:
   deploymentLabel: integration-manager-worker
 autoscale:
   monitoringRate: 30000
-## Actian Integration Manager connection paramaters
+## Actian Integration Manager connection parameters
 #actian:
 #  im:
 #    url:

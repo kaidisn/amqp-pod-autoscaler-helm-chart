@@ -3,15 +3,18 @@ kind: ConfigMap
 metadata:
   name: {{ template "amqp-pod-autoscaler.fullname" . }}
 data:
-data:
   application.properties: |
-      #AMQP
-      queue.management-url={{ default "none" .Values.amqp.managementUrl }}
-      queue.username=${rabbitmq-username}
-      queue.password=${rabbitmq-password}
+    #AMQP
+    queue.management-url={{ default "none" .Values.amqp.managementUrl }}
+    queue.username=${rabbitmq-username}
+    queue.password=${rabbitmq-password}
 
-      worker.deployment.label={{ .Values.worker.deploymentLabel }}
-      autoscale.monitoring.rate={{ .Values.autoscale.monitoringRate }}
+    worker.deployment.label={{ .Values.worker.deploymentLabel }}
+    autoscale.monitoring.rate={{ .Values.autoscale.monitoringRate }}
 
-      # Integration Manager Configuration
-      actian.im.url={{ .Values.actian.im.url }}
+    # Integration Manager Configuration
+    actian.im.url={{ .Values.actian.im.url }}
+
+    {{- if .Values.extraConfig }}
+    {{ .Values.extraConfig | indent 4 | trim }}
+    {{- end }}
