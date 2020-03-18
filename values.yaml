@@ -1,0 +1,62 @@
+# Since our images are in a private repository, a docker registry secret will need to be created in advance to access our repo
+# This secret must be available in the same namespace where the helm chart will be installed to.
+# kubectl create secret docker-registry actian-registrykey --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+# Populate imagePullSecrets as follows once set up:
+#imagePullSecrets:
+#  - actian-registrykey
+imagePullSecrets: []
+image: actian/k8s-rabbit-pod-autoscaler:latest
+imagePullPolicy: IfNotPresent
+affinity: {}
+#   affinity:
+#     podAntiAffinity:
+#       preferredDuringSchedulingIgnoredDuringExecution:
+#       - weight: 1
+#         podAffinityTerm:
+#           labelSelector:
+#             matchLabels:
+#               app: amqp-pod-autoscaler
+#           topologyKey: kubernetes.io/hostname
+livenessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+  httpGet:
+    scheme: HTTP
+    path: /health
+    port: 8080
+revisionHistoryLimit: 10
+existingAutoscalerSecret:
+existingRabbitSecret:
+# Must have the keys:
+#   rabbitmq-username
+#   rabbitmq-password
+replicaCount: 1
+pdb: {}
+nodeSelector: {}
+extraLabels: {}
+podAnnotations: {}
+resources: {}
+## AMQP Configuration - Must use AMQP version 0-9-1
+#amqp:
+#  # Set managementUrl to http://rabbitmq-rabbitmq-ha.default.svc.cluster.local:15672 if using helm rabbitmq-ha
+#  managementUrl:
+#  # Set if not using existingRabbitSecret
+#  username:
+#  password:
+worker:
+  deploymentLabel: integration-manager-worker
+autoscale:
+  monitoringRate: 30000
+## Actian Integration Manager connection paramaters
+#actian:
+#  im:
+#    url:
+#    clientId:
+#    clientSecret:
+#    deviceCode:
+#    userCode:
+
+

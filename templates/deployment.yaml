@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}
+  labels:
+    app: amqp-pod-autoscaler
+    chart: {{ template "amqp-pod-autoscaler.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: amqp-pod-autoscaler
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{ .Values.podAnnotations | toYaml | indent 8 | trim }}
+      {{- end }}
+      labels:
+        app: amqp-pod-autoscaler
+        chart: {{ template "amqp-pod-autoscaler.chart" . }}
+        release: {{ .Release.Name }}
+        {{- if .Values.extraLabels }}
+        {{ .Values.extraLabels | toYaml | indent 8 | trim }}
+        {{- end }}
+    spec:
+      {{- if .Values.affinity }}
+      affinity:
+        {{ .Values.affinity | toYaml | indent 8 | trim }}
+      {{- end }}
+      serviceAccountName: {{ template "amqp-pod-autoscaler.fullname" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ .Values.nodeSelector | toYaml | indent 8 | trim }}
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: amqp-pod-autoscaler
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          resources:
+            {{ toYaml .Values.resources | indent 12 | trim }}
+          livenessProbe:
+            {{ .Values.livenessProbe | toYaml | indent 12 | trim }}
+          env:
+            - name: AUTOSCALER_CONFIGMAP_NAME
+              value: {{ printf "%s" (include "amqp-pod-autoscaler.fullname" .) }}
+          volumeMounts:
+          - name: autoscaler-secret-volume
+            readOnly: true
+            mountPath: /etc/secrets/autoscaler
+          {{- if .Values.existingRabbitSecret }}
+          - name: amqp-secret-volume
+            readOnly: true
+            mountPath: /etc/secrets/amqp
+          {{- end }}
+      volumes:
+      - name: autoscaler-secret-volume
+        secret:
+          {{- if .Values.existingAutoscalerSecret }}
+          secretName: {{ .Values.existingAutoscalerSecret }}
+          {{- else }}
+          secretName: {{ template "amqp-pod-autoscaler.fullname" . }}
+          {{- end }}
+      {{- if .Values.existingRabbitSecret }}
+      - name: amqp-secret-volume
+        secret:
+          secretName: {{ .Values.existingRabbitSecret }}
+          items:
+          - key: rabbitmq-username
+            path: rabbitmq-username
+          - key: rabbitmq-password
+            path: rabbitmq-password
+      {{- end }}
+
+
+

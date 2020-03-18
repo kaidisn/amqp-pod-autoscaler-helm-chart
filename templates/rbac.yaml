@@ -1,0 +1,44 @@
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}
+  labels:
+    app: amqp-pod-autoscaler
+    chart: {{ template "amqp-pod-autoscaler.chart" . }}
+    release: {{ .Release.Name }}
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}-deployment-updater
+  labels:
+    app: amqp-pod-autoscaler
+    chart: {{ template "amqp-pod-autoscaler.chart" . }}
+    release: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "watch"]
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments", "deployments/scale"]
+    verbs: ["get", "update", "list"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}-update-deployments
+  labels:
+    app: amqp-pod-autoscaler
+    chart: {{ template "amqp-pod-autoscaler.chart" . }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "amqp-pod-autoscaler.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}-deployment-updater
+  apiGroup: rbac.authorization.k8s.io

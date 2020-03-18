@@ -1,0 +1,16 @@
+{{- if .Values.pdb }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "amqp-pod-autoscaler.fullname" . }}
+  labels:
+    app: amqp-pod-autoscaler
+    chart: {{ template "amqp-pod-autoscaler.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: amqp-pod-autoscaler
+      release: {{ .Release.Name }}
+{{ toYaml .Values.pdb | indent 2 }}
+{{- end }}
