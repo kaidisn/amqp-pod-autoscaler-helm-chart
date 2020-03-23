@@ -32,6 +32,9 @@ The following table lists the configurable parameters of the amqp-pod-autoscaler
 | `extraConfig` | additional properties to include in the config map | {} |
 | `podAnnotations` | pod annotations | {} |
 | `resources` | set resource limits | {} |
+| `amqp.managementUrl` | rabbitmq management url ex: http://rabbitmq-rabbitmq-ha.default.svc.cluster.local:15672 | nil |
+| `amqp.username` | rabbitmq username | nil |
+| `amqp.password` | rabbitmq password | nil |
 | `worker.deploymentLabel` | identifier label used for the worker deployment(s) | integration-manager-worker |
 | `autoscale.monitoringRate` | the rate at which to check queue depth in ms | 30000 |
 | `actian.im.url` | endpoint for the integration manager APIs | nil |
