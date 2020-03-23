@@ -18,7 +18,7 @@ The following table lists the configurable parameters of the amqp-pod-autoscaler
 | Paramter | Description | Default|
 | -----  | ----- | ------|
 | `imagePullSecrets` | name of Secret resource containing private registry credentials | [] |
-| `image` | image to pull | actian/k8s-rabbit-pod-autoscaler:latest |
+| `image` | image to pull | actian/k8s-rabbit-pod-autoscaler:2.0.5.270 |
 | `imagePullPolicy` | when to pull image | IfNotPresent |
 | `affinity` | node/pod affinities | {} |
 | `livenessProbe` | pod liveness probe | { "initialDelaySeconds": 120, "periodSeconds": 10, "timeoutSeconds": 5, "successThreshhold": 1, "failureThreshhold": 3, "httpGet": { "scheme": "HTTP", "path": "/health", "port": 8080 }} |
