@@ -15,7 +15,7 @@ To install the chart, first configure a override-values.yaml file specific for y
 
 The following table lists the configurable parameters of the amqp-pod-autoscaler chart and their default values.
   
-| Paramter | Description | Default|
+| Parameter | Description | Default|
 | -----  | ----- | ------|
 | `imagePullSecrets` | name of Secret resource containing private registry credentials | [] |
 | `image` | image to pull | actian/k8s-rabbit-pod-autoscaler:2.0.5.270 |
