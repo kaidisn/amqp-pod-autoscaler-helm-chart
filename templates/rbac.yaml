@@ -18,9 +18,6 @@ metadata:
     chart: {{ template "amqp-pod-autoscaler.chart" . }}
     release: {{ .Release.Name }}
 rules:
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "watch"]
   - apiGroups: ["apps", "extensions"]
     resources: ["deployments", "deployments/scale"]
     verbs: ["get", "update", "list"]
