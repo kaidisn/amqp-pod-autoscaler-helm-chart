@@ -54,6 +54,9 @@ spec:
             - name: AUTOSCALER_CONFIGMAP_NAME
               value: {{ printf "%s" (include "amqp-pod-autoscaler.fullname" .) }}
           volumeMounts:
+          - name: autoscaler-config-volume
+            readOnly: true
+            mountPath: /etc/config
           - name: autoscaler-secret-volume
             readOnly: true
             mountPath: /etc/secrets/autoscaler
@@ -63,6 +66,9 @@ spec:
             mountPath: /etc/secrets/amqp
           {{- end }}
       volumes:
+      - name: autoscaler-config-volume
+        configMap:
+          name: {{ template "amqp-pod-autoscaler.fullname" . }}
       - name: autoscaler-secret-volume
         secret:
           {{- if .Values.existingAutoscalerSecret }}
